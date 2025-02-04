@@ -23,28 +23,41 @@ model User {
   name                   String
   email                  String    @unique
   password_hash          String
-  created_at             DateTime  @default(now())
-  updated_at             DateTime  @updatedAt
   role                   Role      @default(user)
   password_reset_token   String?
   password_reset_expires DateTime?
+  created_at             DateTime  @default(now())
+  updated_at             DateTime  @updatedAt
 
   transaction_user      Transaction[] @relation("user")
   transaction_recipient Transaction[] @relation("recipient")
-  wallet                Wallet[]
+
+  accounts Account[]
 
   @@map("users")
 }
 
+model Account {
+  id         String   @id @default(uuid())
+  user_id    String   @unique
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user    User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  wallets Wallet[]
+
+  @@map("accounts")
+}
+
 model Wallet {
   id          String   @id @default(uuid())
-  user_id     String
+  account_id  String
   description String
   balance     Decimal  @default(0.00)
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 
-  user        User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  account     Account       @relation(fields: [account_id], references: [id], onDelete: Cascade)
   transaction Transaction[]
 
   @@map("wallets")
