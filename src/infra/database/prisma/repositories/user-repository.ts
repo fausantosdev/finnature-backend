@@ -11,11 +11,13 @@ export class UserRepository implements Repository {
   public async create({
     name,
     email,
+    date_of_birth,
     password_hash,
   }: Prisma.UserCreateInput): Promise<User> {
     return await this.prisma.user.create({
       data: {
         name,
+        date_of_birth,
         email,
         password_hash,
       },

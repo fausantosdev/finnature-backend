@@ -12,7 +12,7 @@ export class UsersService {
   constructor(private readonly userRepository: Repository) {}
 
   async create(createUserDto: CreateUserDto) {
-    const { name, email, password } = createUserDto
+    const { name, date_of_birth, email, password } = createUserDto
 
     const emailAlreadyExists = await this.userRepository.findOne({ email })
 
@@ -21,6 +21,7 @@ export class UsersService {
 
     const user = await this.userRepository.create({
       name,
+      date_of_birth,
       email,
       password_hash: await hash(password, 8),
     })

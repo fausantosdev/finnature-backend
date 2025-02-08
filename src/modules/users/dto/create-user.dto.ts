@@ -10,6 +10,11 @@ export class CreateUserDto {
   name: string
 
   @IsNotEmpty({
+    message: 'Date of birth is required',
+  })
+  date_of_birth: Date
+
+  @IsNotEmpty({
     message: 'Email is required',
   })
   @IsEmail(
