@@ -9,12 +9,12 @@ export class WalletRepository implements Repository {
   constructor(private readonly prisma: PrismaService) {}
 
   public async create({
-    user,
+    account,
     description,
   }: Prisma.WalletCreateInput): Promise<Wallet> {
     return await this.prisma.wallet.create({
       data: {
-        user,
+        account,
         description,
       },
     })
