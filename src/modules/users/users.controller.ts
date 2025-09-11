@@ -11,33 +11,54 @@ import {
 import { UsersService } from './users.service'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
+import { response } from 'src/common/helpers/response-helper'
 
-@Controller('users')
+@Controller('/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto)
+  async create(@Body() createUserDto: CreateUserDto) {
+    const result = await this.usersService.create(createUserDto)
+
+    return response({
+      data: result,
+    })
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll()
+  async findAll() {
+    const result = await this.usersService.findAll()
+
+    return response({
+      data: result,
+    })
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne({ id })
+  async findOne(@Param('id') id: string) {
+    const result = await this.usersService.findOne({ id })
+
+    return response({
+      data: result,
+    })
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto)
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    const result = await this.usersService.update(id, updateUserDto)
+
+    return response({
+      data: result,
+    })
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(id)
+  async remove(@Param('id') id: string) {
+    const result = await this.usersService.remove(id)
+
+    return response({
+      data: result,
+    })
   }
 }
