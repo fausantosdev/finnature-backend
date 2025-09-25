@@ -1,5 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common'
-import { JwtService } from '@nestjs/jwt'
+import { JwtService, JwtSignOptions } from '@nestjs/jwt'
 import { ConfigService } from '@nestjs/config'
 
 import { compare } from '@utils/crypt'
@@ -11,16 +11,17 @@ import { AuthResponseDto } from './dto/auth-response.dto'
 
 @Injectable()
 export class AuthService {
-  private jwtExpirationTimeInSeconds: number
+  private jwtOptions: JwtSignOptions
 
   constructor(
     private readonly userService: UsersService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService
   ) {
-    this.jwtExpirationTimeInSeconds = +this.configService.get(
-      'JWT_EXPIRATION_TIME'
-    )
+    this.jwtOptions = {
+      expiresIn: this.configService.get('JWT_EXPIRATION_TIME'),
+      secret: this.configService.get('JWT_SECRET'),
+    }
   }
 
   async signIn(signIn: SignInDto): Promise<AuthResponseDto> {
@@ -28,7 +29,7 @@ export class AuthService {
 
     const userExists = (await this.userService.findOne({ email })) as UserDto
 
-    if (!userExists || !compare(password, userExists.password_hash))
+    if (!userExists || !(await compare(password, userExists.password_hash)))
       throw new UnauthorizedException('Invalid credentials')
 
     const payload = {
@@ -36,8 +37,8 @@ export class AuthService {
       email: userExists.email,
     }
 
-    const token = this.jwtService.sign(payload)
+    const token = await this.jwtService.signAsync(payload, this.jwtOptions)
 
-    return { token, expires_in: this.jwtExpirationTimeInSeconds }
+    return { token, expires_in: this.jwtOptions.expiresIn }
   }
 }

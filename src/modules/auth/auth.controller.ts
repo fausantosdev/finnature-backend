@@ -9,10 +9,10 @@ export class AuthController {
 
   @Post('sign-in')
   async signIn(@Body() signIn: SignInDto) {
-    const result = await this.authService.signIn(signIn)
+    const { token } = await this.authService.signIn(signIn)
 
     return response({
-      data: result,
+      data: token,
     })
   }
 }
