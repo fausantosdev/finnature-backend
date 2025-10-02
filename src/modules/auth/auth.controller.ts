@@ -1,7 +1,9 @@
-import { Controller, Post, Body } from '@nestjs/common'
+import { Controller, Post, Body, UseGuards } from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { SignInDto } from './dto/sign-in.dto'
 import { response } from 'src/common/helpers/response-helper'
+import { Request } from 'express'
+import { AuthGuard } from 'src/guards/auth.guard'
 
 @Controller('auth')
 export class AuthController {
@@ -14,5 +16,16 @@ export class AuthController {
     return response({
       data: token,
     })
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('refresh-token')
+  async refreshToken(request: Request) {
+    const user = request
+    console.log(user)
+    /*const { token, expires_in } = await this.authService.refreshToken(user)
+    return response({
+      data: { token, expires_in },
+    })*/
   }
 }

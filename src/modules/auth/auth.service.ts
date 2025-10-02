@@ -2,12 +2,11 @@ import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { JwtService, JwtSignOptions } from '@nestjs/jwt'
 import { ConfigService } from '@nestjs/config'
 
-import { compare } from '@utils/crypt'
-
 import { SignInDto } from './dto/sign-in.dto'
 import { UserDto } from '@modules/users/dto/user.dto'
 import { UsersService } from '@modules/users/users.service'
 import { AuthResponseDto } from './dto/auth-response.dto'
+import { Crypt } from '@protocols/crypt'
 
 @Injectable()
 export class AuthService {
@@ -16,7 +15,8 @@ export class AuthService {
   constructor(
     private readonly userService: UsersService,
     private readonly jwtService: JwtService,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
+    private readonly cryptService: Crypt
   ) {
     this.jwtOptions = {
       expiresIn: this.configService.get('JWT_EXPIRATION_TIME'),
@@ -29,7 +29,10 @@ export class AuthService {
 
     const userExists = (await this.userService.findOne({ email })) as UserDto
 
-    if (!userExists || !(await compare(password, userExists.password_hash)))
+    if (
+      !userExists ||
+      !(await this.cryptService.compare(password, userExists.password_hash))
+    )
       throw new UnauthorizedException('Invalid credentials')
 
     const payload = {

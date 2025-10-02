@@ -1,15 +1,19 @@
 import { HttpException, Injectable } from '@nestjs/common'
-import { hash } from '@utils/crypt'
 
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 
 import { Repository } from '@protocols/repository'
+import { Crypt } from '@protocols/crypt'
+
 import { UserDto } from './dto/user.dto'
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly userRepository: Repository) {}
+  constructor(
+    private readonly userRepository: Repository,
+    private readonly cryptService: Crypt
+  ) {}
 
   async create(createUserDto: CreateUserDto) {
     const { name, date_of_birth, email, password } = createUserDto
@@ -23,7 +27,7 @@ export class UsersService {
       name,
       date_of_birth,
       email,
-      password_hash: await hash(password, 8),
+      password_hash: await this.cryptService.hash(password, 8),
     })
 
     return user
