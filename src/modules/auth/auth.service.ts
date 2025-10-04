@@ -44,4 +44,23 @@ export class AuthService {
 
     return { token, expires_in: this.jwtOptions.expiresIn }
   }
+
+  async refreshToken(token: string): Promise<AuthResponseDto> {
+    const decodedToken = await this.jwtService.decode(token)
+
+    const { sub } = decodedToken as { sub: string; email: string }
+
+    const user = (await this.userService.findOne({ id: sub })) as UserDto
+
+    if (!user) throw new UnauthorizedException()
+
+    const payload = {
+      sub: user.id,
+      email: user.email,
+    }
+
+    const newToken = await this.jwtService.signAsync(payload, this.jwtOptions)
+
+    return { token: newToken, expires_in: this.jwtOptions.expiresIn }
+  }
 }
