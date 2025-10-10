@@ -1,3 +1,4 @@
+import { randomBytes } from 'node:crypto'
 import { Injectable } from '@nestjs/common'
 import * as bcrypt from 'bcrypt'
 
@@ -11,5 +12,9 @@ export class CryptService implements Crypt {
 
   async compare(text: string, hash: string): Promise<boolean> {
     return await bcrypt.compare(text, hash)
+  }
+
+  random(): string {
+    return randomBytes(20).toString('hex')
   }
 }
