@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common'
+import { BadRequestException, HttpException, Injectable } from '@nestjs/common'
 
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
@@ -7,6 +7,7 @@ import { Repository } from '@protocols/repository'
 import { Crypt } from '@protocols/crypt'
 
 import { UserDto } from './dto/user.dto'
+import { User } from './entities/user.entity'
 
 @Injectable()
 export class UsersService {
@@ -45,8 +46,12 @@ export class UsersService {
     return user
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
-    const updated = await this.userRepository.update({ id }, updateUserDto)
+  async update(id: string, data: UpdateUserDto): Promise<object> {
+    if (!data || Object.keys(data).length === 0) {
+      throw new BadRequestException('No data provided for update')
+    }
+
+    const updated = await this.userRepository.update({ id }, data)
 
     return updated
   }
