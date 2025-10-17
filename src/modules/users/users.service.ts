@@ -3,7 +3,7 @@ import { BadRequestException, HttpException, Injectable } from '@nestjs/common'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 
-import { Repository } from '@protocols/repository'
+import { UserRepository } from './repository/user.repository'
 import { Crypt } from '@protocols/crypt'
 
 import { User } from './entities/user.entity'
@@ -11,7 +11,7 @@ import { User } from './entities/user.entity'
 @Injectable()
 export class UsersService {
   constructor(
-    private readonly userRepository: Repository,
+    private readonly userRepository: UserRepository,
     private readonly cryptService: Crypt
   ) {}
 

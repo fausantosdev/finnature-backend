@@ -5,7 +5,7 @@ import { PrismaService } from '@infra/database/prisma/prisma.service'
 import { UsersService } from './users.service'
 import { UsersController } from './users.controller'
 
-import { Repository } from '@protocols/repository'
+import { UserRepository as Repository } from '@modules/users/repository/user.repository'
 import { UserRepository } from '@infra/database/prisma/repositories/user-repository'
 import { Crypt } from '@protocols/crypt'
 import { CryptService } from '@utils/CryptService'
