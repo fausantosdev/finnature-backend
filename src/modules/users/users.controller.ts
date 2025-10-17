@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Put,
 } from '@nestjs/common'
 
 import { UsersService } from './users.service'
@@ -49,7 +50,7 @@ export class UsersController {
   }
 
   @UseGuards(AuthGuard)
-  @Patch(':id')
+  @Put(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     const result = await this.usersService.update(id, updateUserDto)
 
