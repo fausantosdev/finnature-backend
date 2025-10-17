@@ -3,11 +3,11 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   UseGuards,
   Put,
+  Request,
 } from '@nestjs/common'
 
 import { UsersService } from './users.service'
@@ -29,8 +29,20 @@ export class UsersController {
     })
   }
 
+  @Get('me')
   @UseGuards(AuthGuard)
+  async profile(@Request() request: Express.Request) {
+    const { sub } = request.user
+
+    const result = await this.usersService.findOne({ id: sub })
+
+    return response({
+      data: result,
+    })
+  }
+
   @Get()
+  @UseGuards(AuthGuard)
   async findAll() {
     const result = await this.usersService.findAll()
 
@@ -39,8 +51,8 @@ export class UsersController {
     })
   }
 
-  @UseGuards(AuthGuard)
   @Get(':id')
+  @UseGuards(AuthGuard)
   async findOne(@Param('id') id: string) {
     const result = await this.usersService.findOne({ id })
 
@@ -49,8 +61,8 @@ export class UsersController {
     })
   }
 
-  @UseGuards(AuthGuard)
   @Put(':id')
+  @UseGuards(AuthGuard)
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     const result = await this.usersService.update(id, updateUserDto)
 
@@ -59,8 +71,8 @@ export class UsersController {
     })
   }
 
-  @UseGuards(AuthGuard)
   @Delete(':id')
+  @UseGuards(AuthGuard)
   async remove(@Param('id') id: string) {
     const result = await this.usersService.remove(id)
 
