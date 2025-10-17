@@ -3,10 +3,11 @@ import { JwtService } from '@nestjs/jwt'
 import { ConfigService } from '@nestjs/config'
 
 import { SignInDto } from './dto/sign-in.dto'
-import { UserDto } from '@modules/users/dto/user.dto'
+
 import { UsersService } from '@modules/users/users.service'
 import { AuthResponseDto } from './dto/auth-response.dto'
 import { Crypt } from '@protocols/crypt'
+import { User } from '@modules/users/entities/user.entity'
 
 @Injectable()
 export class AuthService {
@@ -20,7 +21,7 @@ export class AuthService {
   async signIn(signIn: SignInDto): Promise<AuthResponseDto> {
     const { email, password } = signIn
 
-    const userExists = (await this.userService.findOne({ email })) as UserDto
+    const userExists = (await this.userService.findOne({ email })) as User
 
     if (
       !userExists ||
@@ -46,7 +47,7 @@ export class AuthService {
 
     const { sub } = decodedToken as { sub: string; email: string }
 
-    const user = (await this.userService.findOne({ id: sub })) as UserDto
+    const user = (await this.userService.findOne({ id: sub })) as User
 
     if (!user) throw new UnauthorizedException()
 

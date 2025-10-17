@@ -6,7 +6,6 @@ import { UpdateUserDto } from './dto/update-user.dto'
 import { Repository } from '@protocols/repository'
 import { Crypt } from '@protocols/crypt'
 
-import { UserDto } from './dto/user.dto'
 import { User } from './entities/user.entity'
 
 @Injectable()
@@ -61,7 +60,7 @@ export class UsersService {
 
     if (!user) throw new HttpException('User not found', 400)
 
-    const deleted = (await this.userRepository.delete({ id })) as UserDto
+    const deleted = (await this.userRepository.delete({ id })) as User
 
     return !!deleted
   }
