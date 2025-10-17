@@ -1,9 +1,10 @@
 import { Controller, Post, Body, UseGuards, Request } from '@nestjs/common'
 import { AuthService } from './auth.service'
-import { SignInDto } from './dto/sign-in.dto'
 import { response } from 'src/common/helpers/response-helper'
 import { AuthGuard } from 'src/guards/auth.guard'
-import { CurrentUser } from 'src/common/decorators/current-user.user.decorator'
+
+import { SignInDto } from './dto/sign-in.dto'
+import { ForgotPasswordDto } from './dto/forgot-password.dto'
 
 @Controller('auth')
 export class AuthController {
