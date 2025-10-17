@@ -16,7 +16,7 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const { name, date_of_birth, email, password } = createUserDto
+    const { name, date_of_birth, email, password_hash } = createUserDto
 
     const emailAlreadyExists = await this.userRepository.findOne({ email })
 
@@ -27,7 +27,7 @@ export class UsersService {
       name,
       date_of_birth,
       email,
-      password_hash: await this.cryptService.hash(password, 8),
+      password_hash: await this.cryptService.hash(password_hash, 8),
     })
 
     return user

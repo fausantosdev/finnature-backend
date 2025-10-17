@@ -31,5 +31,5 @@ export class CreateUserDto {
   @Length(6, 100, {
     message: 'Password must be between 6 and 100 characters',
   })
-  password: string
+  password_hash: string
 }
